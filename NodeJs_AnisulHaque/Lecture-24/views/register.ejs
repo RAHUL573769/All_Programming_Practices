@@ -1,0 +1,27 @@
+<%-include("./layouts/header.ejs")%>
+
+
+<main>
+
+    <h1>Welcome to Register</h1>
+
+    <form action="/register" method="post">
+
+        <div>
+
+            <label for="username">User Name</label>
+            <input type="text" name="username" id="username">
+     
+        </div>
+        <br>
+        <div>
+
+            <label for="password">Password</label>
+            <input type="password" name="password" id="password">
+     
+        </div>
+        <br>
+<button type="submit">Register</button>
+    </form>
+</main>
+<%-include("./layouts/footer")%>
