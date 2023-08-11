@@ -1,10 +1,11 @@
 const express = require("express");
 const createError = require("http-errors");
 const userRouter = require("./routes/userRouter");
+const seedRouter = require("./routes/seedRouter");
 const app = express();
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
-
+app.use("/seedRouter", seedRouter);
 app.use("/products", userRouter);
 app.use((req, res, next) => {
   next(createError(404, "Router Not Found"));
