@@ -2,13 +2,17 @@ var createError = require("http-errors");
 const data = require("../data");
 const User = require("../models/userModel");
 const express = require("express");
+const { errorController } = require("./responsController,");
 const seedUser = async (req, res) => {
   try {
     const userAdded = await User.insertMany(data.users);
 
     res.send(userAdded);
   } catch (error) {
-    console.log(error);
+    return errorController(res, {
+      status: error.status,
+      message: error.message
+    });
   }
 };
 
@@ -51,6 +55,8 @@ const getUser = async (req, res) => {
       status: "failed",
       data: error
     });
+
+    console.log(error);
   }
 };
 module.exports = { seedUser, getUser };

@@ -1,4 +1,17 @@
-const errorResponse = (
+// res.status(202).json({
+//   message: "User Not Found",
+//   status: "failed",
+//   data: error
+// });
+// }
+
+const errorController = (
   res,
-  { statisCode = 500, message = "Default Message" }
-) => {};
+  { statusCode = 500, message = "Internal Server Error" }
+) => {
+  return res.status(statusCode, message).json({
+    message: message,
+    status: statusCode
+  });
+};
+module.exports = { errorController };
