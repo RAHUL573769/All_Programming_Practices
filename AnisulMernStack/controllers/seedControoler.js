@@ -64,5 +64,23 @@ const getUser = async (req, res) => {
   }
 };
 
-const getSpecificUser = (req, res) => {};
-module.exports = { seedUser, getUser };
+const getSpecificUser = async (req, res) => {
+  try {
+    const routeParameter = req.params.id;
+
+    const specificUser = await User.findById(routeParameter);
+    successController(res, {
+      statusCode: 202,
+      message: "User Found",
+      status: "success",
+      data: specificUser,
+      payload: {}
+    });
+  } catch (error) {
+    return errorController(res, {
+      status: error.status,
+      message: error.message
+    });
+  }
+};
+module.exports = { seedUser, getUser, getSpecificUser };
