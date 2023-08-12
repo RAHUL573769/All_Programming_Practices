@@ -2,7 +2,7 @@ var createError = require("http-errors");
 const data = require("../data");
 const User = require("../models/userModel");
 const express = require("express");
-const { errorController } = require("./responsController,");
+const { errorController, successController } = require("./responsController,");
 const seedUser = async (req, res) => {
   try {
     const userAdded = await User.insertMany(data.users);
@@ -38,16 +38,20 @@ const getUser = async (req, res) => {
     if (!userFind) {
       throw createError(404, "User Not Found");
     }
-    res.status(202).json({
+
+    successController(res, {
+      statusCode: 202,
       message: "User Found",
       status: "success",
       data: userFind,
-      pagination: {
-        totalPages: Math.ceil(count / limit)
-      },
-      currentPage: page,
-      previosPage: page - 1 > 0 ? page - 1 : null,
-      nextPage: page + 1 <= Math.ceil(count / limit) ? page + 1 : null
+      payload: {
+        pagination: {
+          totalPages: Math.ceil(count / limit)
+        },
+        currentPage: page,
+        previosPage: page - 1 > 0 ? page - 1 : null,
+        nextPage: page + 1 <= Math.ceil(count / limit) ? page + 1 : null
+      }
     });
   } catch (error) {
     res.status(202).json({
@@ -59,4 +63,6 @@ const getUser = async (req, res) => {
     console.log(error);
   }
 };
+
+const getSpecificUser = (req, res) => {};
 module.exports = { seedUser, getUser };

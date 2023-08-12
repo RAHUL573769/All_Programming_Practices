@@ -14,4 +14,16 @@ const errorController = (
     status: statusCode
   });
 };
-module.exports = { errorController };
+
+const successController = (
+  res,
+  { statusCode, message, status, data, payload }
+) => {
+  res.status(statusCode).json({
+    message: message,
+    status: status,
+    data: data,
+    payload: payload
+  });
+};
+module.exports = { errorController, successController };
