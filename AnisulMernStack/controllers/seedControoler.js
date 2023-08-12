@@ -59,8 +59,6 @@ const getUser = async (req, res) => {
       status: "failed",
       data: error
     });
-
-    console.log(error);
   }
 };
 
@@ -79,8 +77,68 @@ const getSpecificUser = async (req, res) => {
   } catch (error) {
     return errorController(res, {
       status: error.status,
-      message: error.message
+      message: "User Not Found"
     });
   }
 };
-module.exports = { seedUser, getUser, getSpecificUser };
+const deleteSpecificUser = async (req, res) => {
+  try {
+    const deleteParameter = req.params.id;
+
+    const deletedUser = await User.findByIdAndDelete({ _id: deleteParameter });
+    successController(res, {
+      statusCode: 202,
+      message: "User Deleted",
+      status: "success",
+      data: deletedUser,
+      payload: {}
+    });
+  } catch (error) {
+    return errorController(res, {
+      status: error.status,
+      message: "User Not Found"
+    });
+  }
+};
+
+const processRegister = async (req, res) => {
+  try {
+    console.log(req.body);
+    const { name, email, address, phone, isAdmin, password } = req.body;
+    const newUser = {
+      name: name,
+      email: email,
+      address: address,
+      phone: phone,
+      isAdmin: isAdmin,
+      password: password
+    };
+    const userExists = await User.findOne({ email: email });
+    if (userExists) {
+      return;
+    } else {
+      const insertedUser = await User.insertMany(newUser);
+      successController(res, {
+        statusCode: 202,
+        message: "User Deleted",
+        status: "success",
+        data: insertedUser,
+        payload: {}
+      });
+    }
+  } catch (error) {
+    console.log(error.message);
+    return errorController(res, {
+      status: error.status,
+      message: "User Not Inserted"
+    });
+  }
+};
+
+module.exports = {
+  seedUser,
+  getUser,
+  getSpecificUser,
+  deleteSpecificUser,
+  processRegister
+};
