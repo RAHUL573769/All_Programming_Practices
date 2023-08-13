@@ -19,7 +19,7 @@ const successController = (
   res,
   { statusCode, message, status, data, payload }
 ) => {
-  res.status(statusCode).json({
+  return res.status(statusCode).json({
     message: message,
     status: status,
     data: data,

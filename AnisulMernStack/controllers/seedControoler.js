@@ -3,6 +3,8 @@ const data = require("../data");
 const User = require("../models/userModel");
 const express = require("express");
 const { errorController, successController } = require("./responsController,");
+const { createJsonWebToken } = require("../helper/jwt");
+const { jwtKey } = require("../secret");
 const seedUser = async (req, res) => {
   try {
     const userAdded = await User.insertMany(data.users);
@@ -103,8 +105,9 @@ const deleteSpecificUser = async (req, res) => {
 
 const processRegister = async (req, res) => {
   try {
-    console.log(req.body);
+    // console.log(req.body);
     const { name, email, address, phone, isAdmin, password } = req.body;
+
     const newUser = {
       name: name,
       email: email,
@@ -113,17 +116,27 @@ const processRegister = async (req, res) => {
       isAdmin: isAdmin,
       password: password
     };
+
+    const token = createJsonWebToken(
+      { name, email, password, phone, address },
+      jwtKey,
+      10
+    );
+    console.log(token);
+
     const userExists = await User.findOne({ email: email });
     if (userExists) {
-      return;
+      console.log("hi");
+      return { messasr: "User Exists" };
     } else {
+      console.log("Hello");
       const insertedUser = await User.insertMany(newUser);
-      successController(res, {
+      return successController(res, {
         statusCode: 202,
-        message: "User Deleted",
+        message: "User Inserted Successfully",
         status: "success",
         data: insertedUser,
-        payload: {}
+        payload: { token }
       });
     }
   } catch (error) {
