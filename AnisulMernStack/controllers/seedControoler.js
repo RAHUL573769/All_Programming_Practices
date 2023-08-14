@@ -4,7 +4,8 @@ const User = require("../models/userModel");
 const express = require("express");
 const { errorController, successController } = require("./responsController,");
 const { createJsonWebToken } = require("../helper/jwt");
-const { jwtKey } = require("../secret");
+const { jwtKey, clientUrl } = require("../secret");
+const { sendEmailUsingNodemailer } = require("../helper/email");
 const seedUser = async (req, res) => {
   try {
     const userAdded = await User.insertMany(data.users);
@@ -123,6 +124,19 @@ const processRegister = async (req, res) => {
       10
     );
     console.log(token);
+    const emailData = {
+      email,
+      subject: "Account ctivtion Email",
+      html: `Hello ${name}
+      <p>Please Click Here <a href="${clientUrl}/api/user/activate/${token}">Here</a></p>`
+    };
+
+    try {
+      await sendEmailUsingNodemailer(emailData);
+      console.log("Email Devdsg");
+    } catch (error) {
+      console.log(error);
+    }
 
     const userExists = await User.findOne({ email: email });
     if (userExists) {
